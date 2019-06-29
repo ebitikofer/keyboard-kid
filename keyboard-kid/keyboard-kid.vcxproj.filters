@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="res\fonts\discoduck.ttf" />
+    <Font Include="res\fonts\discoduck3d.ttf" />
+    <Font Include="res\fonts\discoduckchrome.ttf" />
+    <Font Include="res\fonts\discoduckgrad.ttf" />
+    <Font Include="res\fonts\discoduckhalf.ttf" />
+    <Font Include="res\fonts\discoduckout.ttf" />
+    <Font Include="res\fonts\endlarge.TTF" />
+    <Font Include="res\fonts\lazy.ttf" />
+    <Font Include="res\fonts\medium.TTF" />
+    <Font Include="res\fonts\mediumdetail.TTF" />
+    <Font Include="res\fonts\neon.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\imgs\backg.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\imgs\background.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\imgs\bg1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\imgs\bg2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\imgs\bg3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\imgs\bgflash.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\imgs\bgpulse.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\imgs\foo.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\imgs\foonoo.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\imgs\foonootoo.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\imgs\foonootooyoo.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\imgs\hover.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\imgs\prompt.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\imgs\sp1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\imgs\sp2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\imgs\sp3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\imgs\sp4.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="res\wavs\bell.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="res\wavs\clap.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="res\wavs\fall.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="res\wavs\high.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="res\wavs\low.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="res\wavs\medium.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="res\wavs\neatbeat.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="res\wavs\rise.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="res\wavs\snare.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="res\wavs\old\beat.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="res\wavs\old\high.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="res\wavs\old\low.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="res\wavs\old\medium.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="res\wavs\old\scratch.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
