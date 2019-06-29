@@ -1,6 +1,9 @@
 /*This source code copyrighted by Lazy Foo' Productions (2004-2015)
 and may not be redistributed without written permission.*/
 
+// This is not exactly Lazy Foo's code anymore and at one point it will be unrecognizable
+// But until then I will keep the credit to Lazy Foo because it was heavilyy based on his tutorial
+
 //Using SDL, SDL_image, standard IO, and strings
 #include <SDL.h>
 #include <SDL_image.h>
@@ -11,6 +14,7 @@ and may not be redistributed without written permission.*/
 #include <cmath>
 #include <random>
 #include <iostream>
+#include "texture.h"
 
 static std::random_device rgen;
 static std::mt19937 mgen(rgen());
@@ -18,54 +22,6 @@ static std::mt19937 mgen(rgen());
 //Screen dimension constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
-
-//Texture wrapper class
-class LTexture {
-
-    public:
-
-        //Initializes variables
-        LTexture();
-
-        //Deallocates memory
-        ~LTexture();
-
-        //Loads image at specified path
-        bool loadFromFile(std::string path );
-
-        //#ifdef _SDL_TTF_H
-        //Creates image from font string
-        bool loadFromRenderedText( int f, std::string textureText, SDL_Color textColor );
-        //#endif
-
-        //Deallocates texture
-        void free();
-
-        //Set color modulation
-        void setColor( Uint8 red, Uint8 green, Uint8 blue );
-
-        //Set blending
-        void setBlendMode( SDL_BlendMode blending );
-
-        //Set alpha modulation
-        void setAlpha( Uint8 alpha );
-
-        //Renders texture at given point
-        void render( int x, int y, int w = 0, int h = 0, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE );
-
-        //Gets image dimensions
-        int getWidth();
-        int getHeight();
-
-    private:
-
-        //The actual hardware texture
-        SDL_Texture* mTexture;
-
-        //Image dimensions
-        int mWidth;
-        int mHeight;
-};
 
 //Starts up SDL and creates window
 bool init();
