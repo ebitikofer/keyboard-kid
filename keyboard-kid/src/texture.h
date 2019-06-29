@@ -20,11 +20,11 @@ public:
   ~LTexture();
 
   //Loads image at specified path
-  bool loadFromFile(std::string path);
+  bool loadFromFile(std::string path, SDL_Renderer* renderer);
 
   //#ifdef _SDL_TTF_H
   //Creates image from font string
-  bool loadFromRenderedText(int f, std::string textureText, SDL_Color textColor);
+  bool loadFromRenderedText(int f, std::string textureText, SDL_Color textColor, SDL_Renderer* renderer, TTF_Font* largeFont, TTF_Font* largeAccentFont, TTF_Font* mediumFont, TTF_Font* smallFont);
   //#endif
 
   //Deallocates texture
@@ -40,7 +40,7 @@ public:
   void setAlpha(Uint8 alpha);
 
   //Renders texture at given point
-  void render(int x, int y, int w = 0, int h = 0, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
+  void render(SDL_Renderer* renderer, int x, int y, int w = 0, int h = 0, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
   //Gets image dimensions
   int getWidth();

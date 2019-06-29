@@ -120,169 +120,6 @@ const int FLASH_ANIMATION_FRAMES = 16;
 SDL_Rect gFlashClips[ FLASH_ANIMATION_FRAMES ];
 LTexture gFlashSheetTexture;
 
-
-LTexture::LTexture()
-{
-    //Initialize
-    mTexture = NULL;
-    mWidth = 0;
-    mHeight = 0;
-}
-
-LTexture::~LTexture()
-{
-    //Deallocate
-    free();
-}
-
-bool LTexture::loadFromFile(std::string path )
-{
-    //Get rid of preexisting texture
-    free();
-
-    //The final texture
-    SDL_Texture* newTexture = NULL;
-
-    //Load image at specified path
-    SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
-    if( loadedSurface == NULL )
-    {
-        printf( "Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError() );
-    }
-    else
-    {
-        //Color key image
-        SDL_SetColorKey( loadedSurface, SDL_TRUE, SDL_MapRGB( loadedSurface->format, 0, 0xFF, 0xFF ) );
-
-        //Create texture from surface pixels
-        newTexture = SDL_CreateTextureFromSurface( gRenderer, loadedSurface );
-        if( newTexture == NULL )
-        {
-            printf( "Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
-        }
-        else
-        {
-            //Get image dimensions
-            mWidth = loadedSurface->w;
-            mHeight = loadedSurface->h;
-        }
-
-        //Get rid of old loaded surface
-        SDL_FreeSurface( loadedSurface );
-    }
-
-    //Return success
-    mTexture = newTexture;
-    return mTexture != NULL;
-}
-
-//#ifdef _SDL_TTF_H
-bool LTexture::loadFromRenderedText(int f, std::string textureText, SDL_Color textColor )
-{
-    //Get rid of preexisting texture
-    free();
-
-    SDL_Surface* textSurface = NULL;
-
-    //Render text surface
-    if(f == 0){
-        textSurface = TTF_RenderText_Solid( gLargeFont, textureText.c_str(), textColor );
-    } else if(f==1){
-        textSurface = TTF_RenderText_Solid( gLargeAccentFont, textureText.c_str(), textColor );
-    } else if(f==2) {
-        textSurface = TTF_RenderText_Solid( gMediumFont, textureText.c_str(), textColor );
-    } else {
-        textSurface = TTF_RenderText_Solid( gSmallFont, textureText.c_str(), textColor );
-    }
-    if( textSurface == NULL )
-    {
-        printf( "Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError() );
-    }
-    else
-    {
-        //Create texture from surface pixels
-        mTexture = SDL_CreateTextureFromSurface( gRenderer, textSurface );
-        if( mTexture == NULL )
-        {
-            printf( "Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError() );
-        }
-        else
-        {
-            //Get image dimensions
-            mWidth = textSurface->w;
-            mHeight = textSurface->h;
-        }
-
-        //Get rid of old surface
-        SDL_FreeSurface( textSurface );
-    }
-
-    //Return success
-    return mTexture != NULL;
-}
-//#endif
-
-void LTexture::free()
-{
-    //Free texture if it exists
-    if( mTexture != NULL )
-    {
-        SDL_DestroyTexture( mTexture );
-        mTexture = NULL;
-        mWidth = 0;
-        mHeight = 0;
-    }
-}
-
-void LTexture::setColor( Uint8 red, Uint8 green, Uint8 blue )
-{
-    //Modulate texture rgb
-    SDL_SetTextureColorMod( mTexture, red, green, blue );
-}
-
-void LTexture::setBlendMode( SDL_BlendMode blending )
-{
-    //Set blending function
-    SDL_SetTextureBlendMode( mTexture, blending );
-}
-
-void LTexture::setAlpha( Uint8 alpha )
-{
-    //Modulate texture alpha
-    SDL_SetTextureAlphaMod( mTexture, alpha );
-}
-
-void LTexture::render( int x, int y, int w, int h, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip )
-{
-
-    SDL_Rect renderQuad;
-
-    //Set rendering space and render to screen
-    if(w == 0 || h == 0) {
-        renderQuad = {x, y, mWidth, mHeight};
-    } else {
-        renderQuad = {x, y, w, h};
-    }
-
-    //Set clip rendering dimensions
-    if( clip != NULL )
-    {
-        renderQuad.w = clip->w;
-        renderQuad.h = clip->h;
-    }
-
-    //Render to screen
-    SDL_RenderCopyEx( gRenderer, mTexture, clip, &renderQuad, angle, center, flip );
-}
-
-int LTexture::getWidth() {
-    return mWidth;
-}
-
-int LTexture::getHeight() {
-    return mHeight;
-}
-
 bool init()
 {
     //Initialization flag
@@ -386,7 +223,7 @@ bool loadStartMedia()
     bool success = true;
 
     //Load sprite sheet texture
-    if( !gBgSheetTexture.loadFromFile( "./res/imgs/background.png" ) )
+    if( !gBgSheetTexture.loadFromFile("./res/imgs/background.png", gRenderer) )
     {
         printf( "Failed to load bg animation texture!\n" );
         success = false;
@@ -411,7 +248,7 @@ bool loadStartMedia()
     }
 
     //Load sprite sheet texture
-    if( !gSpriteSheetTexture.loadFromFile( "./res/imgs/hover.png" ) )
+    if( !gSpriteSheetTexture.loadFromFile( "./res/imgs/hover.png", gRenderer ) )
     {
         printf( "Failed to load walking animation texture!\n" );
         success = false;
@@ -460,7 +297,7 @@ bool loadStartMedia()
     }
 
     //Load pulse sheet texture
-    if( !gPulseSheetTexture.loadFromFile( "./res/imgs/bgpulse.png" ) )
+    if( !gPulseSheetTexture.loadFromFile( "./res/imgs/bgpulse.png", gRenderer ) )
     {
         printf( "Failed to load pulse animation texture!\n" );
         success = false;
@@ -519,7 +356,7 @@ bool loadStartMedia()
     {
         //Render text
         SDL_Color textColor = { 255, 200, 0 };
-        if( !gTitle1Texture.loadFromRenderedText( 0, "K3YB04RD", textColor ) ) {
+        if( !gTitle1Texture.loadFromRenderedText( 0, "K3YB04RD", textColor, gRenderer, gLargeFont, gLargeAccentFont, gMediumFont, gSmallFont) ) {
             printf("Failed to render text texture!\n");
             success = false;
         }
@@ -535,7 +372,7 @@ bool loadStartMedia()
     {
         //Render text detail
         SDL_Color textColor = { 0, 255, 255 };
-        if( !gTitle1DetailTexture.loadFromRenderedText( 0, "K3YB04RD", textColor ) ) {
+        if( !gTitle1DetailTexture.loadFromRenderedText( 0, "K3YB04RD", textColor, gRenderer, gLargeFont, gLargeAccentFont, gMediumFont, gSmallFont) ) {
             printf("Failed to render text texture!\n");
             success = false;
         }
@@ -552,7 +389,7 @@ bool loadStartMedia()
     {
         //Render text
         SDL_Color textColor = { 255, 255, 255 };
-        if( !gTitle2Texture.loadFromRenderedText( 1, "Kid", textColor ) ) {
+        if( !gTitle2Texture.loadFromRenderedText( 1, "Kid", textColor, gRenderer, gLargeFont, gLargeAccentFont, gMediumFont, gSmallFont) ) {
             printf( "Failed to render text texture!\n" );
             success = false;
         }
@@ -568,7 +405,7 @@ bool loadStartMedia()
     {
         //Render text
         SDL_Color textColor = { 255, 110, 210 };
-        if( !gTitle2DetailTexture.loadFromRenderedText( 1, "Kid", textColor ) ) {
+        if( !gTitle2DetailTexture.loadFromRenderedText( 1, "Kid", textColor, gRenderer, gLargeFont, gLargeAccentFont, gMediumFont, gSmallFont) ) {
             printf( "Failed to render text texture!\n" );
             success = false;
         }
@@ -585,7 +422,7 @@ bool loadStartMedia()
     {
         //Render text
         SDL_Color textColor = { 255, 200, 0 };
-        if( !gStartTexture.loadFromRenderedText( 2, "START", textColor ) ) {
+        if( !gStartTexture.loadFromRenderedText( 2, "START", textColor, gRenderer, gLargeFont, gLargeAccentFont, gMediumFont, gSmallFont) ) {
             printf("Failed to render text texture!\n");
             success = false;
         }
@@ -601,7 +438,7 @@ bool loadStartMedia()
     {
         //Render text detail
         SDL_Color textColor = { 0, 255, 255 };
-        if( !gStartDetailTexture.loadFromRenderedText( 2, "START", textColor ) ) {
+        if( !gStartDetailTexture.loadFromRenderedText( 2, "START", textColor, gRenderer, gLargeFont, gLargeAccentFont, gMediumFont, gSmallFont) ) {
             printf("Failed to render text texture!\n");
             success = false;
         }
@@ -618,7 +455,7 @@ bool loadStartMedia()
     {
         //Render text
         SDL_Color textColor = { 255, 110, 210 };
-        if( !gKeysTexture.loadFromRenderedText( 3, "(1)snare(2)tom1(3)tom2(4)tom3  (5)clap(6)bell(7)rise(8)fall      (9)pause(0)stop", textColor ) ) {
+        if( !gKeysTexture.loadFromRenderedText( 3, "(1)snare(2)tom1(3)tom2(4)tom3  (5)clap(6)bell(7)rise(8)fall      (9)pause(0)stop", textColor, gRenderer, gLargeFont, gLargeAccentFont, gMediumFont, gSmallFont) ) {
             printf( "Failed to render text texture!\n" );
             success = false;
         }
@@ -725,7 +562,7 @@ bool loadEndMedia()
 */
 
     //Load sprite sheet texture
-    if( !gBgTexture.loadFromFile( "./res/imgs/backg.png" ) )
+    if( !gBgTexture.loadFromFile( "./res/imgs/backg.png", gRenderer) )
     {
         printf( "Failed to load bg animation texture!\n" );
         success = false;
@@ -734,7 +571,7 @@ bool loadEndMedia()
         //Set bg clips
     }
     //Load sprite sheet texture
-    if( !gDyingSheetTexture.loadFromFile( "./res/imgs/hover.png" ) )
+    if( !gDyingSheetTexture.loadFromFile( "./res/imgs/hover.png", gRenderer) )
     {
         printf( "Failed to load walking animation texture!\n" );
         success = false;
@@ -783,7 +620,7 @@ bool loadEndMedia()
     }
 
     //Load flash sheet texture
-    if( !gFlashSheetTexture.loadFromFile( "./res/imgs/bgflash.png" ) )
+    if( !gFlashSheetTexture.loadFromFile( "./res/imgs/bgflash.png", gRenderer) )
     {
         printf( "Failed to load flash animation texture!\n" );
         success = false;
@@ -882,12 +719,12 @@ bool loadEndMedia()
     {
         //Render text
         SDL_Color textColor = { 155, 0, 0 };
-        if( !gTitle1Texture.loadFromRenderedText( 0, "GAME", textColor ) ) {
+        if( !gTitle1Texture.loadFromRenderedText( 0, "GAME", textColor, gRenderer, gLargeFont, gLargeAccentFont, gMediumFont, gSmallFont ) ) {
             printf("Failed to render text texture!\n");
             success = false;
         }
         //Render text
-        if( !gTitle2Texture.loadFromRenderedText( 0, "OVER", textColor ) ) {
+        if( !gTitle2Texture.loadFromRenderedText( 0, "OVER", textColor, gRenderer, gLargeFont, gLargeAccentFont, gMediumFont, gSmallFont ) ) {
             printf( "Failed to render text texture!\n" );
             success = false;
         }
@@ -903,12 +740,12 @@ bool loadEndMedia()
     {
         //Render text detail
         SDL_Color textColor = { 75, 0, 0 };
-        if( !gTitle1DetailTexture.loadFromRenderedText( 0, "GAME", textColor ) ) {
+        if( !gTitle1DetailTexture.loadFromRenderedText( 0, "GAME", textColor, gRenderer, gLargeFont, gLargeAccentFont, gMediumFont, gSmallFont ) ) {
             printf("Failed to render text texture!\n");
             success = false;
         }
         //Render text
-        if( !gTitle2DetailTexture.loadFromRenderedText( 0, "OVER", textColor ) ) {
+        if( !gTitle2DetailTexture.loadFromRenderedText( 0, "OVER", textColor, gRenderer, gLargeFont, gLargeAccentFont, gMediumFont, gSmallFont ) ) {
             printf( "Failed to render text texture!\n" );
             success = false;
         }
@@ -944,11 +781,11 @@ bool loadEndMedia()
     {
         //Render text
         SDL_Color textColor = { 255, 200, 0 };
-        if( !gRestartTexture.loadFromRenderedText( 2, "RESTART", textColor ) ) {
+        if( !gRestartTexture.loadFromRenderedText( 2, "RESTART", textColor, gRenderer, gLargeFont, gLargeAccentFont, gMediumFont, gSmallFont ) ) {
             printf("Failed to render text texture!\n");
             success = false;
         }
-        if( !gQuitTexture.loadFromRenderedText( 2, "QUIT", textColor ) ) {
+        if( !gQuitTexture.loadFromRenderedText( 2, "QUIT", textColor, gRenderer, gLargeFont, gLargeAccentFont, gMediumFont, gSmallFont ) ) {
             printf( "Failed to render text texture!\n" );
             success = false;
         }
@@ -964,15 +801,15 @@ bool loadEndMedia()
     {
         //Render text detail
         SDL_Color textColor = { 0, 255, 255 };
-        if( !gRestartDetailTexture.loadFromRenderedText( 2, "RESTART", textColor ) ) {
+        if( !gRestartDetailTexture.loadFromRenderedText( 2, "RESTART", textColor, gRenderer, gLargeFont, gLargeAccentFont, gMediumFont, gSmallFont ) ) {
             printf("Failed to render text texture!\n");
             success = false;
         }
-        if( !gQuitDetailTexture.loadFromRenderedText( 2, "QUIT", textColor ) ) {
+        if( !gQuitDetailTexture.loadFromRenderedText( 2, "QUIT", textColor, gRenderer, gLargeFont, gLargeAccentFont, gMediumFont, gSmallFont ) ) {
             printf( "Failed to render text texture!\n" );
             success = false;
         }
-        if( !gArrowTexture.loadFromRenderedText( 2, ">", textColor ) ) {
+        if( !gArrowTexture.loadFromRenderedText( 2, ">", textColor, gRenderer, gLargeFont, gLargeAccentFont, gMediumFont, gSmallFont ) ) {
             printf( "Failed to render text texture!\n" );
             success = false;
         }
@@ -1423,7 +1260,7 @@ int main( int argc, char* args[] ) {
                     switch(current) {
                         case 1:
                             SDL_Rect *bgClip = &gBgClips[slowframe / 3];
-                            gBgSheetTexture.render(0, 0, 0, 0, bgClip);
+                            gBgSheetTexture.render(gRenderer, 0, 0, 0, 0, bgClip);
                             break;
                     };
 
@@ -1433,7 +1270,7 @@ int main( int argc, char* args[] ) {
                             break;
                         case 2:
                             //Render current frame
-                            gBgTexture.render(
+                            gBgTexture.render(gRenderer,
                                     200,
                                     ( gTitle1Texture.getHeight() / 6 ) - 3 + ( gTitle1Texture.getHeight() / 2 ));
                             break;
@@ -1446,14 +1283,14 @@ int main( int argc, char* args[] ) {
                             //Render current frame
                             for (int i = 0; i < pulses; i++) {
                                 detailClip = &gPulseClips[pulseF[i] / 8];
-                                gPulseSheetTexture.render(pulseX[i], pulseY[i], 0, 0, detailClip);
+                                gPulseSheetTexture.render(gRenderer, pulseX[i], pulseY[i], 0, 0, detailClip);
                             }
                             break;
                         case 2:
                             //Render current frame
                             //for (int i = 0; i < pulses; i++) {
                                 detailClip = &gFlashClips[fastframe / 16];
-                                gFlashSheetTexture.render(
+                                gFlashSheetTexture.render(gRenderer,
                                         200,
                                         ( gTitle1Texture.getHeight() / 6 ) - 3 + ( gTitle1Texture.getHeight() / 2 ), 0, 0, detailClip);
                             //}
@@ -1465,7 +1302,7 @@ int main( int argc, char* args[] ) {
                         case 1:
                             //Render current frame
                             SDL_Rect *currentClip = &gSpriteClips[midframe / 8];
-                            gSpriteSheetTexture.render((SCREEN_WIDTH - currentClip->w) / 2,
+                            gSpriteSheetTexture.render(gRenderer, (SCREEN_WIDTH - currentClip->w) / 2,
                                                        (SCREEN_HEIGHT - currentClip->h) * 24 / 40, 0, 0, currentClip);
                             break;
                     };
@@ -1473,59 +1310,59 @@ int main( int argc, char* args[] ) {
                     switch(current) {
                         case 1:
                             //Render current frame
-                            gTitle1Texture.render(
+                            gTitle1Texture.render(gRenderer,
                                     (SCREEN_WIDTH - gTitle1Texture.getWidth()) / 2 + 3,
                                     /*( gTitle1Texture.getHeight() / 10 ) + */ -10);
-                            gTitle1DetailTexture.render(
+                            gTitle1DetailTexture.render(gRenderer,
                                     (SCREEN_WIDTH - gTitle1DetailTexture.getWidth()) / 2 + 3,
                                     /*( gTitle1Texture.getHeight() / 10 ) + */ -6);
-                            gTitle2Texture.render(
+                            gTitle2Texture.render(gRenderer,
                                     ((SCREEN_WIDTH - gTitle1DetailTexture.getWidth()) / 4) +
                                     (gTitle1DetailTexture.getWidth() * 36 / 64),
                                     /*( gTitle1Texture.getHeight() / 10 ) + */
                                     gTitle1Texture.getHeight() - (gTitle2DetailTexture.getHeight() * 3 / 5));
-                            gTitle2DetailTexture.render(
+                            gTitle2DetailTexture.render(gRenderer,
                                     ((SCREEN_WIDTH - gTitle1DetailTexture.getWidth()) / 4) +
                                     (gTitle1DetailTexture.getWidth() * 36 / 64),
                                     /*( gTitle1Texture.getHeight() / 10 ) + */
                                     gTitle1Texture.getHeight() - (gTitle2DetailTexture.getHeight() * 3 / 5));
-                            gStartTexture.render(
+                            gStartTexture.render(gRenderer,
                                     (SCREEN_WIDTH - gStartTexture.getWidth()) / 2,
                                     (SCREEN_HEIGHT - gStartTexture.getHeight() * 3 / 2));
-                            gStartDetailTexture.render(
+                            gStartDetailTexture.render(gRenderer,
                                     (SCREEN_WIDTH - gStartTexture.getWidth()) / 2,
                                     (SCREEN_HEIGHT - gStartTexture.getHeight() * 3 / 2 + 2));
-                            gKeysTexture.render(
+                            gKeysTexture.render(gRenderer,
                                     (SCREEN_WIDTH - gKeysTexture.getWidth()) / 2,
                                     (SCREEN_HEIGHT - gKeysTexture.getHeight()));
                             break;
                         case 2:
                             //Render current frame
-                            gTitle1Texture.render(
+                            gTitle1Texture.render(gRenderer,
                                     (SCREEN_WIDTH - gTitle1Texture.getWidth()) / 2 + 3,
                                     ( gTitle1Texture.getHeight() / 6 ) - 3);
-                            gTitle1DetailTexture.render(
+                            gTitle1DetailTexture.render(gRenderer,
                                     (SCREEN_WIDTH - gTitle1DetailTexture.getWidth()) / 2 + 3,
                                     ( gTitle1DetailTexture.getHeight() / 6 ));
-                            gTitle2Texture.render(
+                            gTitle2Texture.render(gRenderer,
                                     ((SCREEN_WIDTH - gTitle1Texture.getWidth()) / 4) +
                                     (gTitle1Texture.getWidth() * 20 / 64),
                                     /*( gTitle1Texture.getHeight() / 10 ) + */
                                     //(SCREEN_HEIGHT - gTitle1Texture.getHeight() - (gTitle2Texture.getHeight() * 2 / 5)));
                                     ( gTitle1Texture.getHeight() / 6 ) + gTitle1Texture.getHeight() * 27 / 16 - 3);
-                            gTitle2DetailTexture.render(
+                            gTitle2DetailTexture.render(gRenderer,
                                     ((SCREEN_WIDTH - gTitle1DetailTexture.getWidth()) / 4) +
                                     (gTitle1DetailTexture.getWidth() * 20 / 64),
                                     /*( gTitle1Texture.getHeight() / 10 ) + */
                                     //(SCREEN_HEIGHT - gTitle1Texture.getHeight() - (gTitle2Texture.getHeight() * 2 / 5) + 2 ));
                                     ( gTitle1Texture.getHeight() / 6 ) + ( gTitle1Texture.getHeight() * 27 / 16 ));
-                            gRestartTexture.render(
+                            gRestartTexture.render(gRenderer,
                                     (SCREEN_WIDTH * 1 / 3 - gQuitTexture.getWidth() / 2),
                                     (SCREEN_HEIGHT - gRestartTexture.getHeight() * 2 / 2));
                             //gRestartDetailTexture.render(
                             //        (SCREEN_WIDTH * 1 / 3 - gRestartTexture.getWidth() / 2),
                             //        (SCREEN_HEIGHT - gRestartTexture.getHeight() * 3 / 2 + 2));
-                            gQuitTexture.render(
+                            gQuitTexture.render(gRenderer,
                                     (SCREEN_WIDTH * 2 / 3 - gQuitTexture.getWidth() / 2 - 1),
                                     (SCREEN_HEIGHT - gQuitTexture.getHeight() * 2 / 2));
                             //gQuitDetailTexture.render(
@@ -1533,13 +1370,13 @@ int main( int argc, char* args[] ) {
                             //        (SCREEN_HEIGHT - gQuitTexture.getHeight() * 3 / 2 + 2));
                             switch(continu) {
                                 case true:
-                                    gArrowTexture.render(
+                                    gArrowTexture.render(gRenderer,
                                             (SCREEN_WIDTH * 1 / 3 - gQuitTexture.getWidth() / 2) -
                                             gArrowTexture.getWidth() * 2,
                                             (SCREEN_HEIGHT - gRestartTexture.getHeight() * 2 / 2));
                                     break;
                                 case false:
-                                    gArrowTexture.render(
+                                    gArrowTexture.render(gRenderer,
                                             (SCREEN_WIDTH * 2 / 3 - gQuitTexture.getWidth() / 2) -
                                             gArrowTexture.getWidth() * 2,
                                             (SCREEN_HEIGHT - gQuitTexture.getHeight() * 2 / 2));
