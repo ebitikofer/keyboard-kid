@@ -4,16 +4,16 @@ This is a shell for an SDL2 game. This demo contains a starting screen and a gam
 
 
 ## Controls
-:one: Snare			:six: Bell
-
-:two: Tom 1			:seven: Rising sweep
-
-:three: Tom 2		:eight: Falling sweep
-
-:four: Tom 3		:nine: Pause the music
-
-:five: Clap			:zero: Stop the music
-
+:one: Snare\s\s
+:two: High tom\s\s
+:three: Middle tom\s\s
+:four: Low tom\s\s
+:five: Clap\s\s
+:six: Bell\s\s
+:seven: Rising sweep\s\s
+:eight: Falling sweep\s\s
+:nine: Pause the music\s\s
+:zero: Stop the music\s\s
 
 
 ## Starting screen
